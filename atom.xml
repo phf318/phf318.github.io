@@ -6,7 +6,7 @@
   <link href="http://phf318.github.io/atom.xml" rel="self"/>
   
   <link href="http://phf318.github.io/"/>
-  <updated>2021-02-11T16:30:35.750Z</updated>
+  <updated>2021-02-13T02:35:23.887Z</updated>
   <id>http://phf318.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://phf318.github.io/2021/02/13/010%20Editor%20v11.0%20%E9%80%86%E5%90%91%E7%A0%B4%E8%A7%A3/"/>
+    <id>http://phf318.github.io/2021/02/13/010%20Editor%20v11.0%20%E9%80%86%E5%90%91%E7%A0%B4%E8%A7%A3/</id>
+    <published>2021-02-13T02:36:48.032Z</published>
+    <updated>2021-02-13T02:35:23.887Z</updated>
+    
+    <content type="html"><![CDATA[<p>前两天做hgame的时候发现010editor过期了，想搜个破解版下载，结果搜到的都是破解教程，不过大多教程都用的od，od界面太不好看了，就自己用ida试了试~</p><p>打开010 Editor, 输入用户名和密码，会弹出你输入的是无效注册码的警告框<br><img src="https://img-blog.csdnimg.cn/20210211160923882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>于是载入程序后，进入strings窗口，Ctrl+F 搜索字符串 invalid license可定位到主要函数<br><img src="https://img-blog.csdnimg.cn/2021021116122375.png" alt="在这里插入图片描述"><br>找到主要函数 sub_1401E2660，进入函数<br><img src="https://img-blog.csdnimg.cn/20210211161302298.png" alt="在这里插入图片描述"><br>看函数逻辑挺复杂的，但发现关键字“Thank you for purchasing….”应该是成功的标志<br><img src="https://img-blog.csdnimg.cn/20210211164119864.png" alt="在这里插入图片描述"></p><p>大致了解逻辑，初步判断最关键的是在橙色框标注的两个jnz跳转<br>（建议小伙伴们一定要自己看一遍，实地考察。。。）<br><img src="https://img-blog.csdnimg.cn/20210211162003834.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>现在动态调试，以确定如何才能成功走到”Thank you for purchasing….”</p><p>在第一个橙框跳转处下断点，第一步让它跳转，把ZF标志位改为0，第二处不让它跳转，把ZF标志位改为1，（其余地方一直F8步过。。。）<br><img src="https://img-blog.csdnimg.cn/20210211163044632.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>修改完后运行，发现成功绕过，点击OK后就进入正常界面，好耶！<br><img src="https://img-blog.csdnimg.cn/20210211163315320.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>所以就是只要绕过两处跳转即可，已知jnz和jz两种跳转的条件刚好相反，考虑把两处jnz跳转都改成jz跳转！！</p><p>但发现用KeyPatch好像不行呜呜呜<br><img src="https://img-blog.csdnimg.cn/20210211163618146.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>搜了一下发现要改机器码。。。长见识了！!<br><img src="https://img-blog.csdnimg.cn/20210211163818548.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>jnz改成jz跳转： 首位如果是75，改成74 ； 如果是0F  85改成0F  84即可</p><p>改完以后Apply patches，再次打开010Editor，随便输入注册码<br><img src="https://img-blog.csdnimg.cn/20210211164221379.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>成功！！！</p><p>以上就是v11.0版64位的010 Editor破解过程啦~~</p><p>还是 ida  yyds ！！</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;前两天做hgame的时候发现010editor过期了，想搜个破解版下载，结果搜到的都是破解教程，不过大多教程都用的od，od界面太不好看了，就自己用ida试了试~&lt;/p&gt;
+&lt;p&gt;打开010 Editor, 输入用户名和密码，会弹出你输入的是无效注册码的警告框&lt;br&gt;&lt;img</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Hello World</title>
