@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>318&#39;s  Blog</title>
+  <title>318&#39;S Blog</title>
   <icon>https://www.gravatar.com/avatar/d94af267dd5df2cb03cbc39ba3dd04c2</icon>
-  
+  <subtitle>生如逆旅，一苇以航</subtitle>
   <link href="http://phf318.github.io/atom.xml" rel="self"/>
   
   <link href="http://phf318.github.io/"/>
