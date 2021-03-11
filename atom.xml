@@ -6,7 +6,7 @@
   <link href="http://phf318.github.io/atom.xml" rel="self"/>
   
   <link href="http://phf318.github.io/"/>
-  <updated>2021-02-15T00:41:36.431Z</updated>
+  <updated>2021-03-11T12:28:36.069Z</updated>
   <id>http://phf318.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
-    <link href="http://phf318.github.io/2021/02/13/010%20Editor%20v11.0%20%E9%80%86%E5%90%91%E7%A0%B4%E8%A7%A3/"/>
-    <id>http://phf318.github.io/2021/02/13/010%20Editor%20v11.0%20%E9%80%86%E5%90%91%E7%A0%B4%E8%A7%A3/</id>
-    <published>2021-02-13T02:36:48.032Z</published>
-    <updated>2021-02-15T00:41:36.431Z</updated>
+    <title>010_Editor_v11.0_破解</title>
+    <link href="http://phf318.github.io/2021/03/11/010-Editor-v11-0-%E7%A0%B4%E8%A7%A3/"/>
+    <id>http://phf318.github.io/2021/03/11/010-Editor-v11-0-%E7%A0%B4%E8%A7%A3/</id>
+    <published>2021-03-11T12:27:48.000Z</published>
+    <updated>2021-03-11T12:28:36.069Z</updated>
     
     <content type="html"><![CDATA[<p>前两天做hgame的时候发现010editor过期了，花五十美元买它？那是不可能的，想搜个破解版下载，结果搜到的都是破解教程，不过大多教程都用的od，od界面太不好看了，就自己用ida试了试~</p><p>打开010 Editor, 输入用户名和密码，会弹出你输入的是无效注册码的警告框<br><img src="https://img-blog.csdnimg.cn/20210211160923882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>于是载入程序后，进入strings窗口，Ctrl+F 搜索字符串 invalid license可定位到主要函数<br><img src="https://img-blog.csdnimg.cn/2021021116122375.png" alt="在这里插入图片描述"><br>找到主要函数 sub_1401E2660，进入函数<br><img src="https://img-blog.csdnimg.cn/20210211161302298.png" alt="在这里插入图片描述"><br>看函数逻辑挺复杂的，但发现关键字“Thank you for purchasing….”应该是成功的标志<br><img src="https://img-blog.csdnimg.cn/20210211164119864.png" alt="在这里插入图片描述"></p><p>大致了解逻辑，初步判断最关键的是在橙色框标注的两个jnz跳转<br>（建议小伙伴们一定要自己看一遍，实地考察。。。）<br><img src="https://img-blog.csdnimg.cn/20210211162003834.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>现在动态调试，以确定如何才能成功走到”Thank you for purchasing….”</p><p>在第一个橙框跳转处下断点，第一步让它跳转，把ZF标志位改为0，第二处不让它跳转，把ZF标志位改为1，（其余地方一直F8步过。。。）<br><img src="https://img-blog.csdnimg.cn/20210211163044632.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>修改完后运行，发现成功绕过，点击OK后就进入正常界面，好耶！<br><img src="https://img-blog.csdnimg.cn/20210211163315320.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>所以就是只要绕过两处跳转即可，已知jnz和jz两种跳转的条件刚好相反，考虑把两处jnz跳转都改成jz跳转！！</p><p>但发现用KeyPatch好像不行呜呜呜<br><img src="https://img-blog.csdnimg.cn/20210211163618146.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>搜了一下发现要改机器码。。。长见识了！!<br><img src="https://img-blog.csdnimg.cn/20210211163818548.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>jnz改成jz跳转： 首位如果是75，改成74 ； 如果是0F  85改成0F  84即可</p><p>改完以后Apply patches，再次打开010Editor，随便输入注册码<br><img src="https://img-blog.csdnimg.cn/20210211164221379.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>成功！！！</p><p>以上就是v11.0版64位的010 Editor破解过程啦~~</p><p>还是 ida  yyds ！！</p>]]></content>
     
@@ -30,6 +30,27 @@
       
     <summary type="html">&lt;p&gt;前两天做hgame的时候发现010editor过期了，花五十美元买它？那是不可能的，想搜个破解版下载，结果搜到的都是破解教程，不过大多教程都用的od，od界面太不好看了，就自己用ida试了试~&lt;/p&gt;
 &lt;p&gt;打开010 Editor, 输入用户名和密码，会弹出你输入的是无效</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>re_做题记录</title>
+    <link href="http://phf318.github.io/2021/03/11/re-%E5%81%9A%E9%A2%98%E8%AE%B0%E5%BD%95/"/>
+    <id>http://phf318.github.io/2021/03/11/re-%E5%81%9A%E9%A2%98%E8%AE%B0%E5%BD%95/</id>
+    <published>2021-03-11T12:21:35.000Z</published>
+    <updated>2021-03-11T12:29:00.033Z</updated>
+    
+    <content type="html"><![CDATA[<p>本人新手，比较废物，如果有不对的地方还请多多包涵~</p><h2 id="XCTF-secret-galaxy-300"><a href="#XCTF-secret-galaxy-300" class="headerlink" title="XCTF secret-galaxy-300"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114605784">XCTF secret-galaxy-300</a></h2><p>一道挺好的动调题</p><h2 id="buu-BJDCTF2020easy"><a href="#buu-BJDCTF2020easy" class="headerlink" title="buu  BJDCTF2020easy"></a><a href="https://blog.csdn.net/m0_51357657/article/details/113098318">buu  BJDCTF2020easy</a></h2><p>更改call 指令，直接打印flag，挺有趣的一道题</p><h2 id="GWCTF-2019-xxor"><a href="#GWCTF-2019-xxor" class="headerlink" title="[GWCTF 2019] xxor"></a><a href="https://blog.csdn.net/m0_51357657/article/details/113419426">[GWCTF 2019] xxor</a></h2><p>低配版xxtea，要自己写脚本</p><h2 id="HDCTF2019-maze"><a href="#HDCTF2019-maze" class="headerlink" title="[HDCTF2019] maze"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114082283">[HDCTF2019] maze</a></h2><p>虽说是个迷宫，其实是个花指令修复的题，挺好的</p><h2 id="FlareOn4-IgniteMe"><a href="#FlareOn4-IgniteMe" class="headerlink" title="[FlareOn4] IgniteMe"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114082283">[FlareOn4] IgniteMe</a></h2><p>动调+按位异或</p><h2 id="ACTF-usualcrypto"><a href="#ACTF-usualcrypto" class="headerlink" title="[ACTF ] usualcrypto"></a><a href="https://blog.csdn.net/m0_51357657/article/details/113419426">[ACTF ] usualcrypto</a></h2><p>换表base64，动调得表</p><h2 id="GXYCTF-2019-luck-guy"><a href="#GXYCTF-2019-luck-guy" class="headerlink" title="[GXYCTF 2019] luck_guy"></a><a href="https://blog.csdn.net/m0_51357657/article/details/113419426">[GXYCTF 2019] luck_guy</a></h2><p>难度一般，看懂逻辑就好</p><h2 id="WUSTCTF2020-level3"><a href="#WUSTCTF2020-level3" class="headerlink" title="[WUSTCTF2020] level3"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114087149">[WUSTCTF2020] level3</a></h2><p>换表base64</p><h2 id="GWCTF-2019-pyre"><a href="#GWCTF-2019-pyre" class="headerlink" title="[GWCTF 2019] pyre"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114266003">[GWCTF 2019] pyre</a></h2><p>用到了python的uncompyle插件</p><h2 id="rsa"><a href="#rsa" class="headerlink" title="rsa"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114266003">rsa</a></h2><p>给了公钥，用Crypto 和 gmpy2 解私钥 </p><h2 id="MRCTF2020-Transform"><a href="#MRCTF2020-Transform" class="headerlink" title="[MRCTF2020] Transform"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114087149">[MRCTF2020] Transform</a></h2><p>异或+换位</p><h2 id="刮开有奖"><a href="#刮开有奖" class="headerlink" title="刮开有奖"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114087149">刮开有奖</a></h2><p>一道。。很麻烦的题</p><h2 id="findit"><a href="#findit" class="headerlink" title=" findit"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114417890"> findit</a></h2><p>水题，APKIDE+凯撒移位</p><h2 id="ACTF-2020-easyre"><a href="#ACTF-2020-easyre" class="headerlink" title=" [ACTF 2020] easyre"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114417890"> [ACTF 2020] easyre</a></h2><p>脱壳+移位运算</p><h2 id="ACTF-2020-Oruga"><a href="#ACTF-2020-Oruga" class="headerlink" title=" [ACTF 2020]  Oruga"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114417890"> [ACTF 2020]  Oruga</a></h2><p>一道很麻烦的迷宫题。。。</p><h2 id="简单注册器"><a href="#简单注册器" class="headerlink" title=" 简单注册器"></a><a href="https://blog.csdn.net/m0_51357657/article/details/114417890"> 简单注册器</a></h2><p>水题，用jeb</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;本人新手，比较废物，如果有不对的地方还请多多包涵~&lt;/p&gt;
+&lt;h2 id=&quot;XCTF-secret-galaxy-300&quot;&gt;&lt;a href=&quot;#XCTF-secret-galaxy-300&quot; class=&quot;headerlink&quot; title=&quot;XCTF secret-gal</summary>
       
     
     
