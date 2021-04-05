@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"phf318.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本来以为MRCTF推迟，清明就可以学学我可悲的物理了，然而又有校赛，re题出的太认真了以至于做不出来。。。师傅们tql！师傅们辛苦了~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="奇安信校内赛WP">
+<meta property="og:url" content="http://phf318.github.io/2021/04/06/%E5%A5%87%E5%AE%89%E4%BF%A1%E6%A0%A1%E5%86%85%E8%B5%9BWP/index.html">
+<meta property="og:site_name" content="318&#39;s Blog">
+<meta property="og:description" content="本来以为MRCTF推迟，清明就可以学学我可悲的物理了，然而又有校赛，re题出的太认真了以至于做不出来。。。师傅们tql！师傅们辛苦了~">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210405235711393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406000231741.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406001227511.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406001529907.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406001742870.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406002334406.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406003341109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406003540683.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406003829187.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210406011339870.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/202104060116483.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2021-04-05T17:25:24.000Z">
+<meta property="article:modified_time" content="2021-04-05T17:30:52.087Z">
+<meta property="article:author" content="318">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210405235711393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://phf318.github.io/2021/04/06/%E5%A5%87%E5%AE%89%E4%BF%A1%E6%A0%A1%E5%86%85%E8%B5%9BWP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>奇安信校内赛WP | 318's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="318's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">318's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">来人间一趟，总要见见太阳</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+    
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+    
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://phf318.github.io/2021/04/06/%E5%A5%87%E5%AE%89%E4%BF%A1%E6%A0%A1%E5%86%85%E8%B5%9BWP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="318">
+      <meta itemprop="description" content="May you never lack the courage to start over again">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="318's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          奇安信校内赛WP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-06 01:25:24 / 修改时间：01:30:52" itemprop="dateCreated datePublished" datetime="2021-04-06T01:25:24+08:00">2021-04-06</time>
+            </span>
+
+          
+            <div class="post-description">本来以为MRCTF推迟，清明就可以学学我可悲的物理了，然而又有校赛，re题出的太认真了以至于做不出来。。。师傅们tql！师傅们辛苦了~</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="WP-318"><a href="#WP-318" class="headerlink" title="WP-318"></a>WP-318</h1><p>唉，这场打的就挺差的。。。wtcl</p>
+<h2 id="RE-baby-re"><a href="#RE-baby-re" class="headerlink" title="[RE] baby_re"></a>[RE] baby_re</h2><p>超级感谢善良的学姐出了道萌新题了！！！<br>前面给出了flag的格式校验，（一开始眼瞎没看到。。。。<br><img src="https://img-blog.csdnimg.cn/20210405235711393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>就是一个基础的跟”susctflinux”的异或<br><img src="https://img-blog.csdnimg.cn/20210406000231741.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> v7; </span><br><span class="line"><span class="keyword">int</span> v8; </span><br><span class="line"><span class="keyword">char</span> flag[<span class="number">50</span>] = &#123;&#125;;</span><br><span class="line"><span class="keyword">int</span> dest[<span class="number">50</span>] = &#123; <span class="number">0x07</span>,<span class="number">0x04</span>, <span class="number">0x0C</span>, <span class="number">0x39</span>, <span class="number">0x11</span>, </span><br><span class="line">  <span class="number">0x1F</span>, <span class="number">0x2D</span>, <span class="number">0x1E</span>, <span class="number">0x13</span>, <span class="number">0x1B</span>,<span class="number">0x1C</span>, <span class="number">0x2B</span>, <span class="number">0x03</span>, <span class="number">0x19</span>, <span class="number">0x38</span>, </span><br><span class="line">  <span class="number">0x1D</span>, <span class="number">0x09</span>, <span class="number">0x11</span>, <span class="number">0x04</span>, <span class="number">0x10</span>,<span class="number">0x2A</span>, <span class="number">0x38</span>, <span class="number">0x34</span>, <span class="number">0x39</span>, <span class="number">0x36</span>, </span><br><span class="line">  <span class="number">0x29</span>, <span class="number">0x3B</span>, <span class="number">0x2C</span>, <span class="number">0x35</span>, <span class="number">0x33</span>,<span class="number">0x2C</span>, <span class="number">0x34</span>, <span class="number">0x38</span>, <span class="number">0x34</span>, <span class="number">0x3B</span>, </span><br><span class="line">  <span class="number">0x3A</span>, <span class="number">0x2B</span>, <span class="number">0x39</span>, <span class="number">0x2C</span>, <span class="number">0x37</span>,<span class="number">0x2A</span>, <span class="number">0x2C</span>, <span class="number">0x34</span>, <span class="number">0x38</span>, <span class="number">0x34</span>, </span><br><span class="line">  <span class="number">0x39</span>, <span class="number">0x3A</span>, <span class="number">0x29</span>, <span class="number">0x3F</span>, <span class="number">0x2C</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *v17 = <span class="string">&quot;susctflinux&quot;</span>;</span><br><span class="line">   <span class="comment">// memcpy(dest, &amp;unk_400C40, 0xC8uLL);</span></span><br><span class="line">    <span class="keyword">char</span> key[<span class="number">12</span>] = <span class="string">&quot;susctflinux&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span> ; i &lt; <span class="number">50</span> ; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        v8 = key[i % <span class="number">11</span>];                       <span class="comment">//v5 = (*v26)[i + 7];</span></span><br><span class="line">        v7 = i % <span class="number">10</span> + v8;                      <span class="comment">//v8 = v17[i % 11];</span></span><br><span class="line">        flag[i] = dest[i] ^ v7;          <span class="comment">//*v21 = (i % 10 + v8) ^ v5;</span></span><br><span class="line">                                               <span class="comment">//*v9 = *(dest + i)  </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>, flag);</span><br><span class="line">&#125;  <span class="comment">// SUSCTF&#123;try_it_need_to_debug_AAAAAAAAAABBBBBBBBBBCCCCCCCCCC&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="RE-推箱子"><a href="#RE-推箱子" class="headerlink" title="[RE] 推箱子"></a>[RE] 推箱子</h2><p>.NET程序，好耶，交给dnSpy了<br>找到很明显的ShowFlag()，又有md5又有sha1，还是不要手算了<br><img src="https://img-blog.csdnimg.cn/20210406001227511.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>想办法让它直接执行ShowFlag，改一下~~<br>（下面爆红的地方会报错，直接改成0了。。。。）<br><img src="https://img-blog.csdnimg.cn/20210406001529907.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>导出新的exe，打开即得flag（做得最顺的一道题了，感谢oc师傅~<br><img src="https://img-blog.csdnimg.cn/20210406001742870.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="RE-reverse-1"><a href="#RE-reverse-1" class="headerlink" title="[RE] reverse 1"></a>[RE] reverse 1</h2><p><strong>hint: 注意加密算法特征</strong><br>base64，给表了很容易猜到<br><img src="https://img-blog.csdnimg.cn/20210406002334406.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>翻了各种各样的加密方法，总算找到了，很像DES了（不过没找到传说中的S盒。。按理说 Findcrypt 应该识别出来的。。唉）<br><img src="https://img-blog.csdnimg.cn/20210406003341109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>然后有个小坑就是在base64加密之前有一步异或<br><img src="https://img-blog.csdnimg.cn/20210406003540683.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>知道了这些。。。我还是不会逆。。废物我是废物）<br>动调了一下，根据加密完的数努力复原出加密函数。。</p>
+<p>输入aaaaaaaaaaaaaaaaaa会得到：<br><img src="https://img-blog.csdnimg.cn/20210406003829187.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>努力复原后发现前8位正确，后面又又又不对了。。。哭死。。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> DES</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.Padding <span class="keyword">import</span> pad, unpad</span><br><span class="line">BLOCK_SIZE = <span class="number">32</span> <span class="comment"># Bytes</span></span><br><span class="line"></span><br><span class="line">xor=[ <span class="number">0x0D</span>, <span class="number">0xB9</span>, <span class="number">0x59</span>, <span class="number">0xB3</span>, <span class="number">0x0B</span>, <span class="number">0x0C</span>, <span class="number">0xE4</span>, <span class="number">0x26</span>, <span class="number">0xC2</span>, <span class="number">0x8E</span>,</span><br><span class="line">  <span class="number">0x5C</span>, <span class="number">0x93</span>, <span class="number">0x76</span>, <span class="number">0xF9</span>, <span class="number">0xD6</span>, <span class="number">0x7E</span>, <span class="number">0xEE</span>, <span class="number">0xB0</span>, <span class="number">0x4A</span>, <span class="number">0x44</span>,</span><br><span class="line">  <span class="number">0xF6</span>, <span class="number">0xB4</span>, <span class="number">0x87</span>, <span class="number">0x9F</span>, <span class="number">0x45</span>, <span class="number">0x90</span>, <span class="number">0x95</span>, <span class="number">0xFD</span>, <span class="number">0x68</span>, <span class="number">0xDB</span>,</span><br><span class="line">  <span class="number">0xE3</span>, <span class="number">0x73</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encode</span>():</span></span><br><span class="line">    a = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    key = <span class="string">&#x27;deadbeef&#x27;</span>.encode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    pt = DES.new(key, DES.MODE_ECB)</span><br><span class="line">    aa = pt.encrypt(pad(<span class="string">b&#x27;\x61\x61\x61\x61\x61\x61\x61\x61&#x27;</span>, BLOCK_SIZE))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">        a += <span class="built_in">chr</span>(<span class="built_in">ord</span>(aa[i]) ^ xor[i])</span><br><span class="line">    a1 = base64.b64encode(a)</span><br><span class="line">    print(a1)  <span class="comment">#3FkKMaA5NQw=</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    encode()</span><br><span class="line">    key = <span class="string">&#x27;deadbeef&#x27;</span>.encode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    pt = DES.new(key, DES.MODE_ECB)</span><br><span class="line">    str1 = <span class="string">&#x27;O7iQM6kwvSkK&#x27;</span></span><br><span class="line">    str2 = base64.b64decode(str1)</span><br><span class="line">    h = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">        h.append(<span class="built_in">hex</span>(<span class="built_in">ord</span>(str2[i]) ^ xor[i]))</span><br><span class="line">    print(h)  <span class="comment"># [&#x27;0x36&#x27;, &#x27;0x1&#x27;, &#x27;0xc9&#x27;, &#x27;0x80&#x27;, &#x27;0xa2&#x27;, &#x27;0x3c&#x27;, &#x27;0x59&#x27;, &#x27;0xf&#x27;]</span></span><br><span class="line">    flag = pt.decrypt(<span class="string">b&#x27;\x36\x01\xc9\x80\xa2\x3c\x59\x0f&#x27;</span>)</span><br><span class="line">    print(flag)    <span class="comment">#flag: 44f93912****************</span></span><br><span class="line">    <span class="comment">#print(&#x27;FLAG:&#x27;, bytes.decode(flag).rstrip(&#x27;\0&#x27;))</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>应该是八位一组还有什么规律？？（我真的。。。尽力了</p>
+<h2 id="RE-ezpython"><a href="#RE-ezpython" class="headerlink" title="[RE] ezpython"></a>[RE] ezpython</h2><p>流加密。。。好难。。<br>好像是由原字符串生成伪随机数流跟原字符串按位异或？？<br>想了好久。。。并没有做出来。。。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">F</span>(<span class="params">a</span>):</span></span><br><span class="line">    s = binascii.crc32(<span class="built_in">str</span>(a))</span><br><span class="line">    seed = s &amp; <span class="number">4294967295L</span></span><br><span class="line">    <span class="comment">#print(hex(seed)[2:].rjust(8, &#x27;0&#x27;))</span></span><br><span class="line">    sseed = binascii.crc32(binascii.unhexlify(<span class="built_in">hex</span>(seed)[<span class="number">2</span>:<span class="number">0</span>].rjust(<span class="number">8</span>, <span class="string">&#x27;0&#x27;</span>))) &amp; <span class="number">4294967295L</span></span><br><span class="line">    print(sseed)  <span class="comment">#558161692 ??</span></span><br><span class="line">    t = <span class="built_in">pow</span>(sseed, <span class="number">65537</span>, <span class="number">15497588010991761509L</span>) &amp; <span class="number">255</span>  <span class="comment">#37 ??</span></span><br><span class="line">    <span class="keyword">return</span> t</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Decode</span>():</span></span><br><span class="line">    flag = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    tmp = <span class="built_in">bytearray</span>(binascii.unhexlify(<span class="string">&quot;2b05d69d6d001fdae789d3b5a114a77cd89b49f0fbbd4b9f3a5df4557f6d1f0102c25e562f337b239fa7ed55d2a4f89a&quot;</span>))</span><br><span class="line">    key = <span class="built_in">bytearray</span>(base64.b64encode(tmp)) <span class="comment">#print(key)</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(tmp)):</span><br><span class="line">        m = F(key[i])</span><br><span class="line">        temp = tmp[i] ^ m</span><br><span class="line">        flag+=<span class="built_in">chr</span>(temp)</span><br><span class="line">    print(flag)</span><br><span class="line"></span><br><span class="line">str1 = []</span><br><span class="line">flag=<span class="string">&#x27;SUSCTF&#123;abbbbbbbbbbbbbbbbb&#125;&#x27;</span>  <span class="comment">#fake</span></span><br><span class="line">K=<span class="built_in">bytearray</span>(base64.b64encode(flag))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(flag)):</span><br><span class="line">    aa = F(K[i])</span><br><span class="line">    temp = <span class="built_in">ord</span>(flag[i]) ^ aa</span><br><span class="line">    str1.append(temp)</span><br><span class="line">result = binascii.hexlify(<span class="built_in">bytearray</span>(str1))</span><br><span class="line">print(result)</span><br><span class="line">Decode()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="PWN-2048"><a href="#PWN-2048" class="headerlink" title="[PWN] 2048"></a>[PWN] 2048</h2><p>真的认真玩了。。但512对我这个游戏废物可太难了呜呜呜呜</p>
+<h2 id="PWN-signin"><a href="#PWN-signin" class="headerlink" title="[PWN]  signin"></a>[PWN]  signin</h2><p>确实签到，不过一开始emmmm没想到。。。</p>
+<p>生成了一个随机的字符串，password等于那个随机字符串就能拿到flag</p>
+<p>应该是格式化字符串的漏洞叭，输入的buf如果大于15就会把栈上存的字符串泄露出来，如图：<br><img src="https://img-blog.csdnimg.cn/20210406011339870.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>但是如果输入过长，ans就会默认buf溢出的那一部分为password了（好像）<br>所以要取刚好的payload长度也就是15<br><img src="https://img-blog.csdnimg.cn/202104060116483.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/28/DASCTF-RE%E9%83%A8%E5%88%86%E5%A4%8D%E7%8E%B0/" rel="prev" title="DASCTF_RE部分复现">
+      <i class="fa fa-chevron-left"></i> DASCTF_RE部分复现
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#WP-318"><span class="nav-number">1.</span> <span class="nav-text">WP-318</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RE-baby-re"><span class="nav-number">1.1.</span> <span class="nav-text">[RE] baby_re</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RE-%E6%8E%A8%E7%AE%B1%E5%AD%90"><span class="nav-number">1.2.</span> <span class="nav-text">[RE] 推箱子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RE-reverse-1"><span class="nav-number">1.3.</span> <span class="nav-text">[RE] reverse 1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RE-ezpython"><span class="nav-number">1.4.</span> <span class="nav-text">[RE] ezpython</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PWN-2048"><span class="nav-number">1.5.</span> <span class="nav-text">[PWN] 2048</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PWN-signin"><span class="nav-number">1.6.</span> <span class="nav-text">[PWN]  signin</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">318</p>
+  <div class="site-description" itemprop="description">May you never lack the courage to start over again</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+    
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">318</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":220,"height":500},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- 页面点击小红心 -->
+
+<script type="text/javascript" src="/js/clicklove.js"></script>
