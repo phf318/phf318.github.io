@@ -6,7 +6,7 @@
   <link href="http://phf318.github.io/atom.xml" rel="self"/>
   
   <link href="http://phf318.github.io/"/>
-  <updated>2021-06-18T14:09:20.656Z</updated>
+  <updated>2021-07-29T06:31:43.060Z</updated>
   <id>http://phf318.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>植物大战僵尸逆向</title>
+    <link href="http://phf318.github.io/2021/07/29/%E6%A4%8D%E7%89%A9%E5%A4%A7%E6%88%98%E5%83%B5%E5%B0%B8%E9%80%86%E5%90%91/"/>
+    <id>http://phf318.github.io/2021/07/29/%E6%A4%8D%E7%89%A9%E5%A4%A7%E6%88%98%E5%83%B5%E5%B0%B8%E9%80%86%E5%90%91/</id>
+    <published>2021-07-29T06:29:58.000Z</published>
+    <updated>2021-07-29T06:31:43.060Z</updated>
+    
+    <content type="html"><![CDATA[<p>鸽了好久好久好久，完了感觉已经不会做题了（都怪进了考试最多的大学。。。好吧还是因为我菜）想了很久用植物大战僵尸试一试CE实践，今天来实现一下</p><h2 id="一、修改关卡"><a href="#一、修改关卡" class="headerlink" title="一、修改关卡"></a>一、修改关卡</h2><p>从网上刚下载下来的游戏一关都没开，又不想从头开始打<br>惊喜的学到可以修改底层数据改关卡，二进制yyds！！</p><p>首先创立一个用户<br><img src="https://img-blog.csdnimg.cn/20210708192236653.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>然后在C:\ProgramData\PopCapGames\PlantsVsZombies\userdata<br>找到相应的dat 文件~<br><img src="https://img-blog.csdnimg.cn/20210708192438661.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>拖入编辑器（HxD 或 010 editor 都行）<br>经尝试发现每通过一关，04位的值会改变，所以猜测04位是关卡<br><img src="https://img-blog.csdnimg.cn/20210708192831582.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>改一改保存，打卡果然到了第九关，好耶！<br><img src="https://img-blog.csdnimg.cn/20210708192922440.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h2 id="二、修改阳光值"><a href="#二、修改阳光值" class="headerlink" title="二、修改阳光值"></a>二、修改阳光值</h2><p>打开CE，附加到进程<br><img src="https://img-blog.csdnimg.cn/20210708193219422.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>可见此时阳光为25，搜索数值为25的变量<br><img src="https://img-blog.csdnimg.cn/2021070819331286.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210708193353325.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>收集阳光，改变数值，再次扫描，以确定准确的阳光值的地址~<br><img src="https://img-blog.csdnimg.cn/20210708193635142.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><p>双击增加到监控地址区，改变数值，阳光值999<br>（虽然很简单，但看这个999还是蛮爽的。。。<br>对了，值不能改太大，好像过1000就会溢出，你再收集阳光就会减哈哈哈<br><img src="https://img-blog.csdnimg.cn/20210708193710507.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h2 id="三、修改冷冻时间"><a href="#三、修改冷冻时间" class="headerlink" title="三、修改冷冻时间"></a>三、修改冷冻时间</h2><p>有了无限的钱，但还是要等待植物加载<br>所以为了更好的游戏体验（<del>bushi</del><br>试图更改冷冻时间</p><p>啊这个还没成功试出来</p><h2 id="四、更改植物攻击力"><a href="#四、更改植物攻击力" class="headerlink" title="四、更改植物攻击力"></a>四、更改植物攻击力</h2>]]></content>
+    
+    
+    <summary type="html">一次中途夭折的尝试，希望以后能试成功。。</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>奇安信校内赛WP</title>
