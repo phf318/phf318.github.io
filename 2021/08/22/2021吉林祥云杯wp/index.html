@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"phf318.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="逆向好难啊，PWN好难，二进制好难，挑了全场最简单的两道题做了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2021吉林祥云杯wp">
+<meta property="og:url" content="http://phf318.github.io/2021/08/22/2021%E5%90%89%E6%9E%97%E7%A5%A5%E4%BA%91%E6%9D%AFwp/index.html">
+<meta property="og:site_name" content="318&#39;s Blog">
+<meta property="og:description" content="逆向好难啊，PWN好难，二进制好难，挑了全场最简单的两道题做了">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/c4b1ea56d0fa4a54b9eb7770741303ad.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/782a4b410a864cf88b9e9d35be2c937d.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/7c27546ce72e489ab6074f4bfd91e5f1.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/e911efec27a144e8a71090443802fe8e.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/e63e148b61c24d06916f87e190ceb661.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/920bb402328a42e4bc277e2b63777452.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2355f52349474852b5b3017f512a8d02.png">
+<meta property="article:published_time" content="2021-08-22T15:26:00.000Z">
+<meta property="article:modified_time" content="2021-08-22T15:29:05.249Z">
+<meta property="article:author" content="318">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/c4b1ea56d0fa4a54b9eb7770741303ad.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://phf318.github.io/2021/08/22/2021%E5%90%89%E6%9E%97%E7%A5%A5%E4%BA%91%E6%9D%AFwp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2021吉林祥云杯wp | 318's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="318's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">318's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">来人间一趟，总要见见太阳</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+    
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+    
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://phf318.github.io/2021/08/22/2021%E5%90%89%E6%9E%97%E7%A5%A5%E4%BA%91%E6%9D%AFwp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="318">
+      <meta itemprop="description" content="May you never lack the courage to start over again">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="318's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2021吉林祥云杯wp
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-22 23:26:00 / 修改时间：23:29:05" itemprop="dateCreated datePublished" datetime="2021-08-22T23:26:00+08:00">2021-08-22</time>
+            </span>
+
+          
+            <div class="post-description">逆向好难啊，PWN好难，二进制好难，挑了全场最简单的两道题做了</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="祥云杯2021"><a href="#祥云杯2021" class="headerlink" title="祥云杯2021"></a>祥云杯2021</h1><p>目前只做了两道题（没办法 tcl。。。</p>
+<p><strong>MISC-鸣雏恋</strong><br>下载下来是个word，打开只有一句话<br>不太对劲，放到010里看一看发现文件头50 4B 03 04<br>经典压缩包了，文件后缀改成zip，解压<br><img src="https://img-blog.csdnimg.cn/c4b1ea56d0fa4a54b9eb7770741303ad.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>得到一个txt和加密压缩包，文件打开感觉什么都没有。。。<br>但仔细看，第二行可显示字符没有190，所以是零宽度字符隐写<br><img src="https://img-blog.csdnimg.cn/782a4b410a864cf88b9e9d35be2c937d.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>vim 一下，果然<br><img src="https://img-blog.csdnimg.cn/7c27546ce72e489ab6074f4bfd91e5f1.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>放到<a target="_blank" rel="noopener" href="http://330k.github.io/misc_tools/unicode_steganography.html">在线网站上</a>解一下<br><img src="https://img-blog.csdnimg.cn/e911efec27a144e8a71090443802fe8e.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>压缩包解完有129488张图片，两种图片代表01，转成二进制<br><img src="https://img-blog.csdnimg.cn/e63e148b61c24d06916f87e190ceb661.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>二进制转换成ASCII码之后，发现是个base64转png<br><img src="https://img-blog.csdnimg.cn/920bb402328a42e4bc277e2b63777452.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzUxMzU3NjU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>接下来就是写脚本了</p>
+<p>一开始，想用遍历文件夹里的图片<br>（错误案例！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">files = os.listdir(filePath)</span><br><span class="line"> <span class="comment"># 遍历所有文件</span></span><br><span class="line">    <span class="keyword">for</span> file <span class="keyword">in</span> files:</span><br><span class="line">        <span class="comment"># 把文件路径和文件名结合起来</span></span><br><span class="line">        file_d = os.path.join(filePath, file)</span><br><span class="line">        <span class="comment"># 判断该文件是单个文件还是文件夹</span></span><br><span class="line">        <span class="keyword">if</span> os.path.isdir(file_d):  <span class="comment"># 如果是文件夹则递归调用 scanDir() 函数</span></span><br><span class="line">            scanDir(file_d)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            file_stats = os.stat(file_d)</span><br><span class="line">            <span class="keyword">if</span>(file_stats.st_size==<span class="number">262</span>):</span><br><span class="line">                f.write(<span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                f.write(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">   </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>解出来乱码。。发现遍历不一定是按顺序的，还是以用图片的数字编号为准，以下是正确脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    f = <span class="built_in">open</span>(<span class="string">&#x27;key.txt&#x27;</span>, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">129488</span>):</span><br><span class="line">        file_d = <span class="string">r&#x27;C:\\Users\\pengzixuan\\Desktop\\out\\&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.png&#x27;</span></span><br><span class="line">        file_stats = os.stat(file_d)</span><br><span class="line">        <span class="keyword">if</span> (file_stats.st_size == <span class="number">262</span>):</span><br><span class="line">            f.write(<span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            f.write(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">    f.close()</span><br><span class="line">    f = <span class="built_in">open</span>(<span class="string">&#x27;key.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">    flag=f.read()</span><br><span class="line">    data=<span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(flag),<span class="number">8</span>):</span><br><span class="line">        str1 = flag[i:i + <span class="number">8</span>]</span><br><span class="line">        data+=(<span class="built_in">chr</span>(<span class="built_in">int</span>(str1, <span class="number">2</span>)))</span><br><span class="line">    data1=data[<span class="number">22</span>:]  <span class="comment">#去掉前几位</span></span><br><span class="line">    print(data1)</span><br><span class="line">    bs = base64.b64decode(data1)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;1.png&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(bs)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>得到带有flag的图片：<br><img src="https://img-blog.csdnimg.cn/2355f52349474852b5b3017f512a8d02.png" alt="在这里插入图片描述"></p>
+<p>这题对我来说还是。。挺难的呜呜呜</p>
+<h2 id="Crypto-Random-RSA"><a href="#Crypto-Random-RSA" class="headerlink" title="Crypto-Random_RSA"></a>Crypto-Random_RSA</h2><p>这道密码学的还算友好了<br>题目：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> libnum</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">flag=<span class="string">r&#x27;flag&#123;&#125;&#x27;</span></span><br><span class="line"></span><br><span class="line">p=getPrime(<span class="number">512</span>)</span><br><span class="line">q=getPrime(<span class="number">512</span>)</span><br><span class="line">e=<span class="number">0x10001</span></span><br><span class="line">n=p*q</span><br><span class="line">ct=<span class="built_in">pow</span>(flag,e,n)</span><br><span class="line">print(<span class="string">&quot;n=&quot;</span>+ n)</span><br><span class="line">print(<span class="string">&quot;ct=&quot;</span>+ ct)</span><br><span class="line"></span><br><span class="line">dp=<span class="string">r&#x27;&#x27;</span></span><br><span class="line">seeds = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(dp)):</span><br><span class="line">    seeds.append(random.randint(<span class="number">0</span>,<span class="number">10000</span>))</span><br><span class="line"></span><br><span class="line">res = [] </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">    random.seed(seeds[i])</span><br><span class="line">    rands = []</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="number">4</span>):</span><br><span class="line">        rands.append(random.randint(<span class="number">0</span>,<span class="number">255</span>))</span><br><span class="line"></span><br><span class="line">    res.append(<span class="built_in">ord</span>(dp[i]) ^ rands[i%<span class="number">4</span>])</span><br><span class="line">    <span class="keyword">del</span> rands[i%<span class="number">4</span>]</span><br><span class="line">    print(<span class="built_in">str</span>(rands))</span><br><span class="line"></span><br><span class="line">print(res) </span><br><span class="line">print(seeds)</span><br><span class="line"></span><br><span class="line"><span class="comment"># n=81196282992606113591233615204680597645208562279327854026981376917977843644855180528227037752692498558370026353244981467900057157997462760732019372185955846507977456657760125682125104309241802108853618468491463326268016450119817181368743376919334016359137566652069490881871670703767378496685419790016705210391</span></span><br><span class="line"><span class="comment"># ct=61505256223993349534474550877787675500827332878941621261477860880689799960938202020614342208518869582019307850789493701589309453566095881294166336673487909221860641809622524813959284722285069755310890972255545436989082654705098907006694780949725756312169019688455553997031840488852954588581160550377081811151</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [58, 53, 122] [145, 124, 244] [5, 19, 192] [255, 23, 64] [57, 113, 194] [246, 205, 162] [112, 87, 95] [215, 147, 105] [16, 131, 38] [234, 36, 46] [68, 61, 146] [148, 61, 9] [139, 77, 32] [96, 56, 160] [121, 76, 17] [114, 246, 92] [178, 206, 60] [168, 147, 26] [168, 41, 68] [24, 93, 84] [175, 43, 88] [147, 97, 153] [42, 94, 45] [150, 103, 127] [68, 163, 62] [165, 37, 89] [219, 248, 59] [241, 182, 8] [140, 211, 146] [88, 226, 2] [48, 150, 56] [87, 109, 255] [227, 216, 65] [23, 190, 10] [5, 25, 64] [6, 12, 124] [53, 113, 124] [255, 192, 158] [61, 239, 5] [62, 108, 86] [123, 44, 64] [195, 192, 30] [30, 82, 95] [56, 178, 165] [68, 77, 239] [106, 247, 226] [17, 46, 114] [91, 71, 156] [157, 43, 182] [146, 6, 42] [148, 143, 161] [108, 33, 139] [139, 169, 157] [71, 140, 25] [28, 153, 26] [241, 221, 235] [28, 131, 141] [159, 111, 184] [47, 206, 11] [220, 152, 157] [41, 213, 97] [4, 220, 10] [77, 13, 248] [94, 140, 110] [25, 250, 226] [218, 102, 109] [189, 238, 66] [91, 18, 131] [23, 239, 190] [159, 33, 72] [183, 78, 208] [209, 213, 101] [111, 50, 220] [166, 104, 233] [170, 144, 10] [187, 87, 175] [195, 59, 104] [165, 179, 179] [99, 247, 153] [195, 61, 100] [223, 159, 165] [230, 93, 184] [87, 28, 35] [35, 122, 38] [158, 188, 163] [229, 192, 222] [12, 12, 192] [207, 95, 224] [127, 113, 137] [22, 114, 143] [13, 45, 144] [70, 140, 211] [57, 101, 42] [132, 62, 129] [40, 128, 124] [1, 132, 161] [164, 33, 133] [252, 201, 32] [8, 18, 247] [1, 88, 55] [201, 135, 186] [101, 254, 125] [236, 196, 39] [148, 24, 103] [101, 29, 253] [97, 156, 64] [90, 103, 91] [50, 48, 80] [206, 22, 93] [11, 114, 174] [61, 132, 247] [215, 32, 232] [95, 128, 90] [57, 35, 228] [163, 143, 107] [178, 250, 28] [64, 107, 225] [106, 115, 207] [85, 134, 21] [118, 201, 76] [234, 34, 22] [241, 236, 122] [111, 185, 127] [1, 26, 164] [254, 57, 117] [243, 27, 32] [161, 88, 80] [50, 165, 93] [87, 182, 216] [184, 159, 63] [167, 166, 123] [37, 78, 33] [186, 81, 58] [48, 3, 239] [70, 186, 13] [56, 108, 178] [54, 55, 235] [105, 180, 105] [16, 194, 98] [136, 11, 41] [18, 203, 79] [185, 114, 170] [148, 181, 223] [118, 57, 160] [23, 250, 181] [235, 219, 228] [44, 151, 38] [185, 224, 134] [42, 162, 122] [3, 9, 158] [129, 245, 2] [66, 241, 92] [80, 124, 36]</span></span><br><span class="line"><span class="comment"># [55, 5, 183, 192, 103, 32, 211, 116, 102, 120, 118, 54, 120, 145, 185, 254, 77, 144, 70, 54, 193, 73, 64, 0, 79, 244, 190, 23, 215, 187, 53, 176, 27, 138, 42, 89, 158, 254, 159, 133, 78, 11, 155, 163, 145, 248, 14, 179, 23, 226, 220, 201, 5, 71, 241, 195, 75, 191, 237, 108, 141, 141, 185, 76, 7, 113, 191, 48, 135, 139, 100, 83, 212, 242, 21, 143, 255, 164, 146, 119, 173, 255, 140, 193, 173, 2, 224, 205, 68, 10, 77, 180, 24, 23, 196, 205, 108, 28, 243, 80, 140, 4, 98, 76, 217, 70, 208, 202, 78, 177, 124, 10, 168, 165, 223, 105, 157, 152, 48, 152, 51, 133, 190, 202, 136, 204, 44, 33, 58, 4, 196, 219, 71, 150, 68, 162, 175, 218, 173, 19, 201, 100, 100, 85, 201, 24, 59, 186, 46, 130, 147, 219, 22, 81]</span></span><br><span class="line"><span class="comment"># [4827, 9522, 552, 880, 7467, 7742, 9425, 4803, 6146, 4366, 1126, 4707, 1138, 2367, 1081, 5577, 4592, 5897, 4565, 2012, 2700, 1331, 9638, 7741, 50, 824, 8321, 7411, 6145, 1271, 7637, 5481, 8474, 2085, 2421, 590, 7733, 9427, 3278, 5361, 1284, 2280, 7001, 8573, 5494, 7431, 2765, 827, 102, 1419, 6528, 735, 5653, 109, 4158, 5877, 5975, 1527, 3027, 9776, 5263, 5211, 1293, 5976, 7759, 3268, 1893, 6546, 4684, 419, 8334, 7621, 1649, 6840, 2975, 8605, 5714, 2709, 1109, 358, 2858, 6868, 2442, 8431, 8316, 5446, 9356, 2817, 2941, 3177, 7388, 4149, 4634, 4316, 5377, 4327, 1774, 6613, 5728, 1751, 8478, 3132, 4680, 3308, 9769, 8341, 1627, 3501, 1046, 2609, 7190, 5706, 3627, 8867, 2458, 607, 642, 5436, 6355, 6326, 1481, 9887, 205, 5511, 537, 8576, 6376, 3619, 6609, 8473, 2139, 3889, 1309, 9878, 2182, 8572, 9275, 5235, 6989, 6592, 4618, 7883, 5702, 3999, 925, 2419, 7838, 3073, 488, 21, 3280, 9915, 3672, 579]</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>理解一下大概是，先伪随机数异或求出dp值，然后是个经典的rsa的dp泄露（网上有现成脚本）</p>
+<p>众所周知，给定了生成随机数的种子，生成的随机数不变，这里种子已经给出了就很好做了</p>
+<p>完整脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">seeds = [<span class="number">4827</span>, <span class="number">9522</span>, <span class="number">552</span>, <span class="number">880</span>, <span class="number">7467</span>, <span class="number">7742</span>, <span class="number">9425</span>, <span class="number">4803</span>, <span class="number">6146</span>, <span class="number">4366</span>, <span class="number">1126</span>, <span class="number">4707</span>, <span class="number">1138</span>, <span class="number">2367</span>, <span class="number">1081</span>, <span class="number">5577</span>, <span class="number">4592</span>, <span class="number">5897</span>, <span class="number">4565</span>, <span class="number">2012</span>, <span class="number">2700</span>, <span class="number">1331</span>, <span class="number">9638</span>, <span class="number">7741</span>,</span><br><span class="line">       <span class="number">50</span>, <span class="number">824</span>, <span class="number">8321</span>, <span class="number">7411</span>, <span class="number">6145</span>, <span class="number">1271</span>, <span class="number">7637</span>, <span class="number">5481</span>, <span class="number">8474</span>, <span class="number">2085</span>, <span class="number">2421</span>, <span class="number">590</span>, <span class="number">7733</span>, <span class="number">9427</span>, <span class="number">3278</span>, <span class="number">5361</span>, <span class="number">1284</span>, <span class="number">2280</span>, <span class="number">7001</span>, <span class="number">8573</span>, <span class="number">5494</span>, <span class="number">7431</span>, <span class="number">2765</span>, <span class="number">827</span>, <span class="number">102</span>, <span class="number">1419</span>, <span class="number">6528</span>, <span class="number">735</span>, <span class="number">5653</span>, <span class="number">109</span>, <span class="number">4158</span>, <span class="number">5877</span>, <span class="number">5975</span>, <span class="number">1527</span>, <span class="number">3027</span>, <span class="number">9776</span>, <span class="number">5263</span>, <span class="number">5211</span>, <span class="number">1293</span>, <span class="number">5976</span>, <span class="number">7759</span>, <span class="number">3268</span>, <span class="number">1893</span>, <span class="number">6546</span>, <span class="number">4684</span>, <span class="number">419</span>, <span class="number">8334</span>, <span class="number">7621</span>, <span class="number">1649</span>, <span class="number">6840</span>, <span class="number">2975</span>, <span class="number">8605</span>, <span class="number">5714</span>, <span class="number">2709</span>, <span class="number">1109</span>, <span class="number">358</span>, <span class="number">2858</span>, <span class="number">6868</span>, <span class="number">2442</span>, <span class="number">8431</span>, <span class="number">8316</span>, <span class="number">5446</span>, <span class="number">9356</span>, <span class="number">2817</span>, <span class="number">2941</span>, <span class="number">3177</span>, <span class="number">7388</span>, <span class="number">4149</span>, <span class="number">4634</span>, <span class="number">4316</span>, <span class="number">5377</span>, <span class="number">4327</span>, <span class="number">1774</span>, <span class="number">6613</span>, <span class="number">5728</span>, <span class="number">1751</span>, <span class="number">8478</span>, <span class="number">3132</span>, <span class="number">4680</span>, <span class="number">3308</span>, <span class="number">9769</span>, <span class="number">8341</span>, <span class="number">1627</span>, <span class="number">3501</span>, <span class="number">1046</span>, <span class="number">2609</span>, <span class="number">7190</span>, <span class="number">5706</span>, <span class="number">3627</span>, <span class="number">8867</span>, <span class="number">2458</span>, <span class="number">607</span>, <span class="number">642</span>, <span class="number">5436</span>, <span class="number">6355</span>, <span class="number">6326</span>, <span class="number">1481</span>, <span class="number">9887</span>, <span class="number">205</span>, <span class="number">5511</span>, <span class="number">537</span>, <span class="number">8576</span>, <span class="number">6376</span>, <span class="number">3619</span>, <span class="number">6609</span>, <span class="number">8473</span>, <span class="number">2139</span>, <span class="number">3889</span>, <span class="number">1309</span>, <span class="number">9878</span>, <span class="number">2182</span>, <span class="number">8572</span>, <span class="number">9275</span>, <span class="number">5235</span>, <span class="number">6989</span>, <span class="number">6592</span>, <span class="number">4618</span>, <span class="number">7883</span>, <span class="number">5702</span>, <span class="number">3999</span>, <span class="number">925</span>, <span class="number">2419</span>, <span class="number">7838</span>, <span class="number">3073</span>, <span class="number">488</span>, <span class="number">21</span>, <span class="number">3280</span>, <span class="number">9915</span>, <span class="number">3672</span>, <span class="number">579</span>]</span><br><span class="line">res = [<span class="number">55</span>, <span class="number">5</span>, <span class="number">183</span>, <span class="number">192</span>, <span class="number">103</span>, <span class="number">32</span>, <span class="number">211</span>, <span class="number">116</span>, <span class="number">102</span>, <span class="number">120</span>, <span class="number">118</span>, <span class="number">54</span>, <span class="number">120</span>, <span class="number">145</span>, <span class="number">185</span>, <span class="number">254</span>, <span class="number">77</span>, <span class="number">144</span>, <span class="number">70</span>, <span class="number">54</span>, <span class="number">193</span>, <span class="number">73</span>, <span class="number">64</span>, <span class="number">0</span>, <span class="number">79</span>, <span class="number">244</span>, <span class="number">190</span>, <span class="number">23</span>, <span class="number">215</span>, <span class="number">187</span>, <span class="number">53</span>, <span class="number">176</span>, <span class="number">27</span>, <span class="number">138</span>, <span class="number">42</span>, <span class="number">89</span>, <span class="number">158</span>, <span class="number">254</span>, <span class="number">159</span>, <span class="number">133</span>, <span class="number">78</span>, <span class="number">11</span>, <span class="number">155</span>, <span class="number">163</span>, <span class="number">145</span>, <span class="number">248</span>, <span class="number">14</span>, <span class="number">179</span>, <span class="number">23</span>, <span class="number">226</span>, <span class="number">220</span>, <span class="number">201</span>, <span class="number">5</span>, <span class="number">71</span>, <span class="number">241</span>, <span class="number">195</span>, <span class="number">75</span>, <span class="number">191</span>, <span class="number">237</span>, <span class="number">108</span>, <span class="number">141</span>, <span class="number">141</span>, <span class="number">185</span>, <span class="number">76</span>, <span class="number">7</span>, <span class="number">113</span>, <span class="number">191</span>, <span class="number">48</span>, <span class="number">135</span>, <span class="number">139</span>, <span class="number">100</span>, <span class="number">83</span>, <span class="number">212</span>, <span class="number">242</span>, <span class="number">21</span>, <span class="number">143</span>, <span class="number">255</span>, <span class="number">164</span>, <span class="number">146</span>, <span class="number">119</span>, <span class="number">173</span>, <span class="number">255</span>, <span class="number">140</span>, <span class="number">193</span>, <span class="number">173</span>, <span class="number">2</span>, <span class="number">224</span>, <span class="number">205</span>, <span class="number">68</span>, <span class="number">10</span>, <span class="number">77</span>, <span class="number">180</span>, <span class="number">24</span>, <span class="number">23</span>, <span class="number">196</span>, <span class="number">205</span>, <span class="number">108</span>, <span class="number">28</span>, <span class="number">243</span>, <span class="number">80</span>, <span class="number">140</span>, <span class="number">4</span>, <span class="number">98</span>, <span class="number">76</span>, <span class="number">217</span>, <span class="number">70</span>, <span class="number">208</span>, <span class="number">202</span>, <span class="number">78</span>, <span class="number">177</span>, <span class="number">124</span>, <span class="number">10</span>, <span class="number">168</span>, <span class="number">165</span>, <span class="number">223</span>, <span class="number">105</span>, <span class="number">157</span>, <span class="number">152</span>, <span class="number">48</span>, <span class="number">152</span>, <span class="number">51</span>, <span class="number">133</span>, <span class="number">190</span>, <span class="number">202</span>, <span class="number">136</span>, <span class="number">204</span>, <span class="number">44</span>, <span class="number">33</span>, <span class="number">58</span>, <span class="number">4</span>, <span class="number">196</span>, <span class="number">219</span>, <span class="number">71</span>, <span class="number">150</span>, <span class="number">68</span>, <span class="number">162</span>, <span class="number">175</span>, <span class="number">218</span>, <span class="number">173</span>, <span class="number">19</span>, <span class="number">201</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">85</span>, <span class="number">201</span>, <span class="number">24</span>, <span class="number">59</span>, <span class="number">186</span>, <span class="number">46</span>, <span class="number">130</span>, <span class="number">147</span>, <span class="number">219</span>, <span class="number">22</span>, <span class="number">81</span>]</span><br><span class="line"></span><br><span class="line">dp=<span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(res)):</span><br><span class="line">    random.seed(seeds[i])</span><br><span class="line">    rands = []</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="number">4</span>):</span><br><span class="line">        rands.append(random.randint(<span class="number">0</span>,<span class="number">255</span>))</span><br><span class="line">    a=rands[i%<span class="number">4</span>]</span><br><span class="line">    dp+=<span class="built_in">chr</span>(res[i]^a)</span><br><span class="line">print(dp)</span><br><span class="line"></span><br><span class="line">n=<span class="number">81196282992606113591233615204680597645208562279327854026981376917977843644855180528227037752692498558370026353244981467900057157997462760732019372185955846507977456657760125682125104309241802108853618468491463326268016450119817181368743376919334016359137566652069490881871670703767378496685419790016705210391</span></span><br><span class="line">c=<span class="number">61505256223993349534474550877787675500827332878941621261477860880689799960938202020614342208518869582019307850789493701589309453566095881294166336673487909221860641809622524813959284722285069755310890972255545436989082654705098907006694780949725756312169019688455553997031840488852954588581160550377081811151</span></span><br><span class="line">dp=<span class="number">5372007426161196154405640504110736659190183194052966723076041266610893158678092845450232508793279585163304918807656946147575280063208168816457346755227057</span></span><br><span class="line">e=<span class="number">65537</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, e):</span><br><span class="line">    <span class="keyword">if</span> (dp * e - <span class="number">1</span>) % i == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">if</span> n % (((dp * e - <span class="number">1</span>) // i) + <span class="number">1</span>) == <span class="number">0</span>:</span><br><span class="line">            p = ((dp * e - <span class="number">1</span>) // i) + <span class="number">1</span></span><br><span class="line">            q = n // (((dp * e - <span class="number">1</span>) // i) + <span class="number">1</span>)</span><br><span class="line">            phi = (q - <span class="number">1</span>) * (p - <span class="number">1</span>)</span><br><span class="line">            d = gmpy2.invert(e, phi)</span><br><span class="line">            m = <span class="built_in">pow</span>(c, d, n)</span><br><span class="line">flag=long_to_bytes(m)  <span class="comment">#0x56006392793406549012915975207582000335336081517127286295437299100128144059518792192004013138662286717</span></span><br><span class="line">print(flag)   <span class="comment">#flag&#123;74281db3-c6f0-e59a-4da6-39b8c71250fe&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/02/BUU%E7%BE%8A%E5%9F%8E%E6%9D%AF%E5%A4%8D%E7%8E%B0RE/" rel="prev" title="BUU羊城杯复现RE">
+      <i class="fa fa-chevron-left"></i> BUU羊城杯复现RE
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A5%A5%E4%BA%91%E6%9D%AF2021"><span class="nav-number">1.</span> <span class="nav-text">祥云杯2021</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Crypto-Random-RSA"><span class="nav-number">1.1.</span> <span class="nav-text">Crypto-Random_RSA</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">318</p>
+  <div class="site-description" itemprop="description">May you never lack the courage to start over again</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+    
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">318</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":220,"height":500},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
+<!-- 页面点击小红心 -->
+
+<script type="text/javascript" src="/js/clicklove.js"></script>
